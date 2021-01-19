@@ -1,0 +1,206 @@
+#DDL(data definition language): THIS DEALS WITH SCHEMA(STRUCTURE) MEANING (TABLES):
+1)create (to create view, function, triggers.....etc  )
+2)alter
+3)drop
+4)truncate
+5)rename
+6)comment
+
+1)create
+Syntax:
+create (table,view,function) table_name,view_name,function_name;
+
+Example:
+create table student(rollno int, name varchar(20), date int);
+
+2)alter:
+i)for adding new column:
+syntax:ALTER TABLE table_name ADD column_name dt
+example:alter table student add column subject varchar(20);
+
+ii)for modifying column datatype:
+syntax:ALTER TABLE table_name MODIFY column_name data type
+example:alter table student modify date varchar(20);
+
+iii)for deleting column:
+syntax:ALTER TABLE table_name DROP COLUMN column_name
+example:alter table student drop date;
+
+3)drop:
+i)for deleting table
+syntax:DROP TABLE table_name;
+example:drop table student;
+
+ii)for deleting database
+syntax:DROP DATABASE database_name;
+example:drop database school;
+
+4)truncate:this delete all data, and keep only structure, every space allocated for the data is removed
+syntax:TRUNCATE TABLE table_name;
+example:truncate table student;
+
+5)rename: for renaming a table:
+syntax:ALTER TABLE table_name RENAME To new_table_name)
+example:alter table student rename to student_of_divA; 
+
+6)comment:
+i)single line comment using(--):
+example: 
+--this is single line comment
+select * from user1;
+
+ii)multiline comment using(/* */):
+example:
+/*this will select
+from user2*/
+select * from user2;
+
+Comment on existing table
+SQL>comment on table student 
+	is 'this will store the book detail';
+	
+To view this comment
+SQL>select * from user_tab_comments;    
+
+Comment on existing column
+SQL>comment on column book.id 
+	is 'this will store
+		the id of the book';
+
+To view this comment:
+SQL>select * from user_col_comments where table_name=’book’;
+
+To remove the existing comment on column:
+SQL>comment on table book.id is '';
+
+NOTE: sql is not case sensitive meaning student & STUDENT are both same.
+
+
+#DML(data manupalation language):
+The structure is ready now we'll fill the data inside the structure.
+1)select
+2)insert
+3)update
+4)delete
+
+1)select:
+example:
+SQL>select * from student;
+
+2)insert:
+example:
+SQL>insert into student(id,name,location) values(1,'fareen','mumbai');
+		OR
+SQL>insert into student values(1,'fareen','mumbai');
+
+3)update:
+syntax:
+UPDATE table_name
+		SET column1 = value1, column2 = value2, ...
+		WHERE condition;
+example:
+SQL>update student set id=2, name='ansari' where id=1;
+
+4)delete:
+syntax:delete from student where id=1;
+
+
+#3)DCL(data control language):DBA Task
+1)grant:
+2)revoke:
+
+1)grant:to give permission.
+syntax:GRANT privilege_name
+		ON object_name
+		TO {user_name I PUBLIC I role_name}
+		[WITH GRANT OPTION];
+
+i)grant DDL:create table(view etc), alter, drop, truncate , rename.
+example1:grant create table to fareen;
+example2:grant drop view to fareen;
+....etc
+
+ii)grant DML : SELECT, INSERT, UPDATE, DELETE,
+GRANT SELECT or INSERT or UPDATE or DELETE ON employees TO fareen;
+example1:grant insert on student to fareen;
+example2:grant update to employee to fareen;
+...etc
+
+iii)to give all permission to user fareen on DDL
+syntax: GRANT ALL ON table_name TO user_name;
+example:grant All on student to fareen;
+
+iv)if u want to give select permission to all user use public
+example: GRANT SELECT ON table_name TO public;
+
+2)revoke:The main purpose of the revoke command is canceling the previously granted permissions.
+syntx:	REVOKE<privilege list>
+		ON <relation name or view name>
+		From <user name>
+
+i)revoke DDL:
+example: REVOKE create table FROM fareen;
+
+ii)revoke DML:
+example:revoke update on student from fareen;
+
+iii)revoke all permission:
+example: revoke ALL on student from fareen;
+
+iv)revoke the permission given on public:
+example:revoke select on student from public;
+
+
+
+#4)TCL(transection control language):use in transection:
+1)commit  : data will be saved on commit.
+2)rollback : to undo the changes we made.
+3)savepoint : The main use of the Savepoint command is to save a transaction temporarily. 
+This way users can rollback to the point whenever it is needed.
+
+1)commit:
+example: update student set name='alan' where id=1;
+now there is a lock on alan after i commit it will be saved to db successfully.
+		 commit;
+		 
+Automatic Transaction Control:
+Set autocommit on;
+OR
+set autocommit off;
+
+2)rollback:
+update student set name='alan' where id=1;
+savepoint A;
+insert into student(id,name,location) values(2,'sam','LA');
+savepoint B;
+
+Before rollback:
+id   name  location
+1	 alan  US
+2    sam   LA
+
+rollback to A
+now this will rollback to A and the changes we made after savepoint A will be deleted
+
+After rollback:
+id   name  location
+1	 alan  US
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
