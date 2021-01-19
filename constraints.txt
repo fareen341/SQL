@@ -1,0 +1,134 @@
+#CONSTRAINTS:
+1)primary key
+2)foreign key
+3)check
+4)unique
+5)not null
+6)default
+
+#1)primary key:
+one primary key:
+syntax: constraint constraint_name primary key;
+example:
+Method 1:
+create table student(
+	id int constraint p_k1 primary key,
+	name varchar,
+	rollno int
+	);
+	
+Method 2:
+create table student(
+	id int,
+	name varchar,
+	rollno int,
+	stud_location varchar(20),
+	constraint p_k1 primary key,
+	);
+
+Multiple primary key:
+create table student(
+	st_id int,
+	subject_id int,
+	constraint pk_2 primary key(st_id,subject_id)
+	);
+	
+Add primary key on existing table:
+alter table student add constraint pk3 primary key(st_id, subject_id);
+
+Drop primary key:
+alter table student drop constraint pk3;
+
+------------------------------------------------------------------------------
+	
+2)foreign key:
+example:
+create table location(
+	pincode int,
+	stud_location varchar(20),
+	constraint f_k1 foreign key(stud_location) references student(stud_location)
+	);
+	
+Add foreign key on existing table:
+alter table location add constraint fk2 foreign key(stud_location) references student(stud_location);
+
+Droping foreign key:
+alter table drop constraint fk2;
+
+------------------------------------------------------------------------------
+
+#3)check:
+example:
+Method 1:
+create table person(
+	id int,
+	name varchar(20),
+	age int check(age > 18)
+	);
+	
+Method 2:
+create table person(
+	id int,
+	name varchar(20),
+	age int,
+	check(age > 18)
+	);
+	
+Add check constraint on existing table:
+alter table person add constraint chk1 check(age > 18);
+
+Droping check constraint:
+alter table person drop constraint chk1;
+
+-------------------------------------------------------------------------------
+
+#4)unique:
+example:
+Method 1:
+create table student(
+	s_id int constraint uk1 unique,
+	s_name varchar(20)
+	);
+
+Method 2:
+create table student(
+	s_id int not null,
+	s_name varchar(20)
+	constraint uk1 unique(s_id)
+	);
+
+Add check constraint on existing table:
+alter table student add constraint uk1 unique(s_id);
+
+Droping check constraint:
+alter table person drop constraint s_id;
+
+-------------------------------------------------------------------------------
+
+5)not null:
+Method 1:
+crate table person(
+	p_id,
+	p_name varchar(20) constraint nn1 not null
+	);
+	
+Add not null to existing table:
+alter table person modify p_name varchar(20) not null;
+
+Drop not null constraint:
+alter table person drop constraint nn1;
+
+-------------------------------------------------------------------------------
+
+6)default:
+create table mumbai_university(
+	u_id int,
+	location default 'Mumbai',
+	);
+	
+in Oracle:
+Add check constraint on existing table:
+alter table mumbai_university modify location default 'Mumbai';
+
+Droping check constraint:
+alter table mumbai_university alter column location drop default;
