@@ -1,0 +1,23 @@
+KEYS IN SQL
+
+1)super key: an attribute or a set of attributes that can be used to identify row of data in a table is a super key.
+A key which uniquely identify each record.
+Example:
+StudentId,   RollNo,    SubjectId,
+All of three are unique , we can select one or all of them as to identify each record uniquely.
+
+2)candidate key(primary key) : minimal subset of super key.
+Example: we can use StudentId or RollNo or StudentId to uniquely identify each record.
+
+3)Alternate key : all rest columns are alternate keys except primary key.
+
+4)composite key:A composite key, in the context of relational databases, 
+is a combination of two or more columns in a table that can be used to uniquely identify each row in the table. 
+Example: StudentId and SubjectId togather act as composite keys.
+
+5)surrogate key: there are some cases where there is no unique key in the table. In that case we can add a key which uniquely
+identify each record.
+Example: person_name, person_location
+here we can add person_id to uniquely identify each record.
+
+6)foreign key: it refers the primary key.
