@@ -1,0 +1,24 @@
+VIEWS IN INDEX
+->view are virtual table does not exist in real in db.
+->when we join two tables we get the output table with no name , to give name to that table we can use view.
+
+1)Creating View:
+Syntax:create view view_name;
+
+using single table:
+create view show_data as
+select name,rollno from student 
+where id>20;
+
+using multiple table:
+create view as jointableview as
+select name,subject,rollno from student,subject
+where student.id=subject.id;
+
+the above query is simply a natural join.
+
+2)selecting view:
+>select * from jointableview;
+
+3)dropping view:
+>drop view view_name;
