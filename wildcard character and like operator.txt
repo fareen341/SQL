@@ -1,0 +1,53 @@
+Wildcard Characters
+1)*, %		:zero or more
+2)?, _   	:single character
+3)[] 		:any single charachter within brackets
+4)!, ^		:any single charachter not within brackets
+5)-			:range of characters
+6)#			:any single numeric character
+
++----+----------+-----+-----------+----------+
+| ID | NAME     | AGE | ADDRESS   | SALARY   |
++----+----------+-----+-----------+----------+
+|  1 | Ramesh   |  32 | Ahmedabad |  2000.00 |
+|  2 | Khilan   |  25 | Delhi     |  1500.00 |
+|  3 | kaushik  |  23 | Kota      |  2000.00 |
+|  4 | Chaitali |  25 | Mumbai    |  6500.00 |
+|  5 | Hardik   |  27 | Bhopal    |  8500.00 |
+|  6 | Komal    |  22 | MP        |  4500.00 |
+|  7 | Muffy    |  24 | Indore    | 10000.00 |
++----+----------+-----+-----------+----------+
+				table1
+
+Examples:
+1)*, %
+SQL>Select name from table1 where name LIKE '%R';
+output:
+Ramesh
+
+2)?, _
+SQL>Select name from table1 where name LIKE '_omal';
+output:
+Komal
+
+3)[]
+SQL>Select name from table1 where name LIKE '[HMK]%';  (all names which starts with H,M or K)
+output:
+Hardik
+Komal
+Muffy
+
+4)!, ^
+SQL>Select name from table1 where name LIKE '[!RKCH]%';  (all names which does not starts with R,K,C or H)
+output:
+Muffy
+
+5)-
+SQL>Select name from table1 where name LIKE 'K[a-o]l%';  
+output:
+KOmal
+
+6)#
+SQL>Select salary from table1 where salary LIKE '6#00';  
+output:
+6500
