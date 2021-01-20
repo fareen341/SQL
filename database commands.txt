@@ -1,0 +1,26 @@
+DATABASE COMMANDS:
+
+1)create database: 
+syntax:create database database_name;
+example:create database school;
+
+2)drop database:
+syntax:drop database database_name
+example:drop database school;
+
+3)back-up database:
+i)back-up without differential.
+syntax:backup database database_name
+			to disk = 'filepath';
+			
+example:backup database school
+			to disk = 'D:\backups\testDB.bak';
+
+ii)back-up with differential.
+syntax:backup database database_name
+			to disk = 'filepath'
+			with differential;
+	
+example: backup database school
+			to disk = 'D:\backups\testDB.bak';
+			with differential
