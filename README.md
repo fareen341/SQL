@@ -114,3 +114,4 @@ MariaDB [testingdb]> select x+y addition from number;
 </pre>
 
 
+![bdi](https://user-images.githubusercontent.com/59610617/124487854-d0bc4b80-ddcc-11eb-9a55-800d7749fcbe.png)
