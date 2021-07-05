@@ -72,3 +72,17 @@ MariaDB [testingdb]> select * from mobile;
 +----+------+------------+
 1 row in set (0.000 sec)
 </pre>
+
+<b>OPERATORS</b><br>
+1)as operator<br>
+<pre>
+MariaDB [testingdb]> select x as x_label,y as y_label from number;
++---------+---------+
+| x_label | y_label |
++---------+---------+
+|      10 |      20 |
+|      40 |      58 |
+|       3 |      56 |
++---------+---------+
+3 rows in set (0.000 sec)
+</pre>
