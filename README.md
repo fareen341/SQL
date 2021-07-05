@@ -23,3 +23,55 @@ MariaDB [testingdb]> create table mobile(
 Query OK, 0 rows affected (0.711 sec)
 </pre>
 
+Updating:
+<pre>
+MariaDB [testingdb]> update student set id=4 where id=2;
+Query OK, 1 row affected (0.168 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [testingdb]> select * from student;
++----+---------+------+
+| id | name    | per  |
++----+---------+------+
+|  1 | fareen  | 77.8 |
+|  3 | sana    |   50 |
+|  4 | anamika |   90 |
++----+---------+------+
+3 rows in set (0.001 sec)
+
+MariaDB [testingdb]> select * from mobile;
++----+------+-------------+
+| id | sid  | mob         |
++----+------+-------------+
+|  1 |    1 | 9876543210  |
+|  2 |    4 | 83948674638 |
+|  3 |    4 | 9486848390  |
++----+------+-------------+
+3 rows in set (0.000 sec)
+</pre>
+
+Deleting:
+<pre>
+MariaDB [testingdb]> delete from student where id=2;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [testingdb]> select * from student;
++----+---------+------+
+| id | name    | per  |
++----+---------+------+
+|  1 | fareen  | 77.8 |
+|  3 | sana    |   50 |
+|  4 | anamika |   90 |
++----+---------+------+
+3 rows in set (0.000 sec)
+
+MariaDB [testingdb]> select * from mobile;
++----+------+-------------+
+| id | sid  | mob         |
++----+------+-------------+
+|  1 |    1 | 9876543210  |
+|  2 |    4 | 83948674638 |
+|  3 |    4 | 9486848390  |
++----+------+-------------+
+3 rows in set (0.000 sec)
+</pre>
