@@ -1,2 +1,2 @@
-COMMANDS IN MYSQL<br>
+<b>COMMANDS IN MYSQL</b><br>
 DDL:
