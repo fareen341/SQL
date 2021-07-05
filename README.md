@@ -74,7 +74,7 @@ MariaDB [testingdb]> select * from mobile;
 </pre>
 
 <b>OPERATORS</b><br>
-1)as operator<br>
+1)as operators : 'as' is used to give alias name.<br>
 <pre>
 MariaDB [testingdb]> select x as x_label,y as y_label from number;
 +---------+---------+
@@ -86,3 +86,31 @@ MariaDB [testingdb]> select x as x_label,y as y_label from number;
 +---------+---------+
 3 rows in set (0.000 sec)
 </pre>
+
+2)Atrithmetic Operator(+,-,/,*,%):<br>
+<pre>
+MariaDB [testingdb]> select x,y, x+y as addition,x-y as subtraction, x*y as multiplication, x/y as division, x%y as modulus from number;
++------+------+----------+-------------+----------------+----------+---------+
+| x    | y    | addition | subtraction | multiplication | division | modulus |
++------+------+----------+-------------+----------------+----------+---------+
+|   10 |   20 |       30 |         -10 |            200 |   0.5000 |      10 |
+|   40 |   58 |       98 |         -18 |           2320 |   0.6897 |      40 |
+|    3 |   56 |       59 |         -53 |            168 |   0.0536 |       3 |
++------+------+----------+-------------+----------------+----------+---------+
+3 rows in set (0.001 sec)
+</pre>
+
+It works without as keyword as well, but better to write as.<br>
+<pre>
+MariaDB [testingdb]> select x+y addition from number;
++----------+
+| addition |
++----------+
+|       30 |
+|       98 |
+|       59 |
++----------+
+3 rows in set (0.001 sec)
+</pre>
+
+
