@@ -52,26 +52,23 @@ MariaDB [testingdb]> select * from mobile;
 
 Deleting:
 <pre>
-MariaDB [testingdb]> delete from student where id=2;
-Query OK, 0 rows affected (0.000 sec)
+MariaDB [testingdb]> delete from student where id=4;
+Query OK, 1 row affected (0.075 sec)
 
 MariaDB [testingdb]> select * from student;
-+----+---------+------+
-| id | name    | per  |
-+----+---------+------+
-|  1 | fareen  | 77.8 |
-|  3 | sana    |   50 |
-|  4 | anamika |   90 |
-+----+---------+------+
-3 rows in set (0.000 sec)
++----+--------+------+
+| id | name   | per  |
++----+--------+------+
+|  1 | fareen | 77.8 |
+|  3 | sana   |   50 |
++----+--------+------+
+2 rows in set (0.000 sec)
 
 MariaDB [testingdb]> select * from mobile;
-+----+------+-------------+
-| id | sid  | mob         |
-+----+------+-------------+
-|  1 |    1 | 9876543210  |
-|  2 |    4 | 83948674638 |
-|  3 |    4 | 9486848390  |
-+----+------+-------------+
-3 rows in set (0.000 sec)
++----+------+------------+
+| id | sid  | mob        |
++----+------+------------+
+|  1 |    1 | 9876543210 |
++----+------+------------+
+1 row in set (0.000 sec)
 </pre>
