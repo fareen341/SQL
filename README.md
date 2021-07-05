@@ -115,3 +115,172 @@ MariaDB [testingdb]> select x+y addition from number;
 
 3)Comparision operator(<,>,<=,>=,=,==):<br>
 for assigning value we use set operator just like we use in update query.<br>
+Examples<br>
+<pre>
+MariaDB [testingdb]> select * from emp2;
++----+---------+----------+--------+------------+
+| id | name    | dept     | salary | doj        |
++----+---------+----------+--------+------------+
+|  1 | Fareen  | IT       |  50000 | 2018-09-02 |
+|  2 | Anamika | Accounts |  34000 | 2021-08-02 |
+|  3 | Roma    | Accounts |  60000 | 2020-03-02 |
++----+---------+----------+--------+------------+
+3 rows in set (0.000 sec)
+
+MariaDB [testingdb]> select * from emp2 where dept='IT';
++----+--------+------+--------+------------+
+| id | name   | dept | salary | doj        |
++----+--------+------+--------+------------+
+|  1 | Fareen | IT   |  50000 | 2018-09-02 |
++----+--------+------+--------+------------+
+1 row in set (0.029 sec)
+
+MariaDB [testingdb]> select * from emp2 where salary>50000;
++----+------+----------+--------+------------+
+| id | name | dept     | salary | doj        |
++----+------+----------+--------+------------+
+|  3 | Roma | Accounts |  60000 | 2020-03-02 |
++----+------+----------+--------+------------+
+1 row in set (0.059 sec)
+
+MariaDB [testingdb]> select * from emp2 where salary>=50000;
++----+--------+----------+--------+------------+
+| id | name   | dept     | salary | doj        |
++----+--------+----------+--------+------------+
+|  1 | Fareen | IT       |  50000 | 2018-09-02 |
+|  3 | Roma   | Accounts |  60000 | 2020-03-02 |
++----+--------+----------+--------+------------+
+2 rows in set (0.001 sec)
+
+MariaDB [testingdb]> select * from emp2 where doj>='2021-07-05';
++----+---------+----------+--------+------------+
+| id | name    | dept     | salary | doj        |
++----+---------+----------+--------+------------+
+|  2 | Anamika | Accounts |  34000 | 2021-08-02 |
++----+---------+----------+--------+------------+
+1 row in set (0.044 sec)
+</pre>
+
+4)Logical operator(and,or,not):
+To check more than one condition at a time<br>
+<u>and operator</u><br>
+Example<br>
+<pre>
+MariaDB [testingdb]> select * from emp2 where salary>50000 and salary<70000;
++----+------+----------+--------+------------+
+| id | name | dept     | salary | doj        |
++----+------+----------+--------+------------+
+|  3 | Roma | Accounts |  60000 | 2020-03-02 |
++----+------+----------+--------+------------+
+1 row in set (0.131 sec)
+</pre>
+
+<u>or operator</u><br>
+Example<br>
+<pre>
+MariaDB [testingdb]> select * from emp2 where salary=30000 or salary=50000 or salary=34000;
++----+---------+----------+--------+------------+
+| id | name    | dept     | salary | doj        |
++----+---------+----------+--------+------------+
+|  1 | Fareen  | IT       |  50000 | 2018-09-02 |
+|  2 | Anamika | Accounts |  34000 | 2021-08-02 |
++----+---------+----------+--------+------------+
+2 rows in set (0.039 sec)
+</pre>
+This query is same as >select * from emp2 where salary IN(30000,50000,34000);
+
+<u>not operator</u><br>
+Example<br>
+<pre>
+</pre>
+
+5)Instead or wtiting multiple or operator use IN & NOT IN<br>
+Example<br>
+<pre>
+MariaDB [testingdb]> select * from emp2 where salary IN(50000,60000,70000);
++----+--------+----------+--------+------------+
+| id | name   | dept     | salary | doj        |
++----+--------+----------+--------+------------+
+|  1 | Fareen | IT       |  50000 | 2018-09-02 |
+|  3 | Roma   | Accounts |  60000 | 2020-03-02 |
++----+--------+----------+--------+------------+
+2 rows in set (0.049 sec)
+
+MariaDB [testingdb]> select * from emp2 where salary NOT IN(50000,60000,70000);
++----+---------+----------+--------+------------+
+| id | name    | dept     | salary | doj        |
++----+---------+----------+--------+------------+
+|  2 | Anamika | Accounts |  34000 | 2021-08-02 |
++----+---------+----------+--------+------------+
+1 row in set (0.001 sec)
+</pre>
+
+6)Between Operator:<br>
+Example<br>
+<pre>
+MariaDB [testingdb]> select * from emp2 where salary between 30000 and 60000;
++----+---------+----------+--------+------------+
+| id | name    | dept     | salary | doj        |
++----+---------+----------+--------+------------+
+|  1 | Fareen  | IT       |  50000 | 2018-09-02 |
+|  2 | Anamika | Accounts |  34000 | 2021-08-02 |
+|  3 | Roma    | Accounts |  60000 | 2020-03-02 |
++----+---------+----------+--------+------------+
+3 rows in set (0.001 sec)
+</pre>
+Here including 30000 and 60000.
+
+<b>CLAUSES</b><br>
+1)Order by clause: default is ascending order.<br>
+to sort in descending order, use desc.<br>
+Example<br>
+<pre>
+MariaDB [testingdb]> select * from emp2 order by salary;
++----+---------+----------+--------+------------+
+| id | name    | dept     | salary | doj        |
++----+---------+----------+--------+------------+
+|  2 | Anamika | Accounts |  34000 | 2021-08-02 |
+|  1 | Fareen  | IT       |  50000 | 2018-09-02 |
+|  3 | Roma    | Accounts |  60000 | 2020-03-02 |
++----+---------+----------+--------+------------+
+3 rows in set (0.091 sec)
+
+MariaDB [testingdb]> select * from emp2 order by salary desc;
++----+---------+----------+--------+------------+
+| id | name    | dept     | salary | doj        |
++----+---------+----------+--------+------------+
+|  3 | Roma    | Accounts |  60000 | 2020-03-02 |
+|  1 | Fareen  | IT       |  50000 | 2018-09-02 |
+|  2 | Anamika | Accounts |  34000 | 2021-08-02 |
++----+---------+----------+--------+------------+
+3 rows in set (0.001 sec)
+</pre>
+
+2)Limit clause: to limit the number of records<br>
+Example<br>
+<pre>
+MariaDB [testingdb]> select * from emp2 limit 2;
++----+---------+----------+--------+------------+
+| id | name    | dept     | salary | doj        |
++----+---------+----------+--------+------------+
+|  1 | Fareen  | IT       |  50000 | 2018-09-02 |
+|  2 | Anamika | Accounts |  34000 | 2021-08-02 |
++----+---------+----------+--------+------------+
+2 rows in set (0.001 sec)
+</pre>
+
+<b>DISTINCT FUNCTION</b><br>
+It won't allow the repeated records.
+Exammple<br>
+<pre>
+MariaDB [testingdb]> select distinct(dept) as depts from emp2;
++----------+
+| depts    |
++----------+
+| IT       |
+| Accounts |
++----------+
+2 rows in set (0.042 sec)
+</pre>
+
+
