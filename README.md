@@ -1,4 +1,3 @@
-![event](https://user-images.githubusercontent.com/59610617/124487944-e598df00-ddcc-11eb-8eb1-b63966c96803.png)
 <b>COMMANDS IN MYSQL</b><br>
 Primary Key:
 student table
@@ -114,4 +113,5 @@ MariaDB [testingdb]> select x+y addition from number;
 3 rows in set (0.001 sec)
 </pre>
 
-![event](https://user-images.githubusercontent.com/59610617/124487961-ed588380-ddcc-11eb-85eb-dfbbafd41eec.png)
+3)Comparision operator(<,>,<=,>=,=,==):<br>
+for assigning value we use set operator just like we use in update query.<br>
