@@ -788,4 +788,176 @@ MariaDB [testingdb]> select date_format('2021-07-06','%d-%M-%Y') as new_format;
 1 row in set (0.011 sec)
 </pre>
 
+<b>GROUP BY vs HAVING CLAUSE</b>
+GROUP BY<br>
+Example: to group the employee by dept.<br>
+It automatically sort in ascending, to do in descending use >select * from emp group by dept desc;<br>
+<pre>
+MariaDB [emptbl]> select * from emp;
++-------+--------+-----------+------+------------+---------+---------+--------+
+| empno | ename  | job       | mgr  | hiredate   | sal     | comm    | deptno |
++-------+--------+-----------+------+------------+---------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
++-------+--------+-----------+------+------------+---------+---------+--------+
+14 rows in set (0.000 sec)
+
+MariaDB [emptbl]> select job,count(empno) as total_emp from emp group by job;
++-----------+-----------+
+| job       | total_emp |
++-----------+-----------+
+| ANALYST   |         2 |
+| CLERK     |         4 |
+| MANAGER   |         3 |
+| PRESIDENT |         1 |
+| SALESMAN  |         4 |
++-----------+-----------+
+5 rows in set (0.001 sec)
+
+MariaDB [emptbl]> select job,count(empno) as total_emp from emp group by job having count(empno)>3;
++----------+-----------+
+| job      | total_emp |
++----------+-----------+
+| CLERK    |         4 |
+| SALESMAN |         4 |
++----------+-----------+
+2 rows in set (0.001 sec)
+
+where clause is not allowed with group by:
+MariaDB [emptbl]> select job,count(empno) as total_emp from emp group by job where count(empno)>3;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'where count(empno)>3' at line 1
+
+</pre>
+<b>SUB-QURIES</b>
+Sub-queries execute from inner to outer except correlated query.
+1)Single row sub-query: which is returning the single record/row/tuple.<br>
+2)Multi-row sub-query: which is returning the multiplt row.
+Example<br>
+
+<pre>
+1)
+
+Question 1)Find the name of the employee having the highest salary in the table<br>
+MariaDB [emptbl]> select * from emp where sal=(select max(sal) from emp);
++-------+-------+-----------+------+------------+---------+------+--------+
+| empno | ename | job       | mgr  | hiredate   | sal     | comm | deptno |
++-------+-------+-----------+------+------------+---------+------+--------+
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 | 5000.00 | NULL |     10 |
++-------+-------+-----------+------+------------+---------+------+--------+
+1 row in set (0.001 sec)
+
+Question 2)Find bunch of salary exculding highest salary.
+MariaDB [emptbl]> select max(sal) from emp where sal!=(select max(sal) from emp);
++----------+
+| max(sal) |
++----------+
+|  3000.00 |
++----------+
+1 row in set (0.001 sec)
+
+Here :
+step one is :
+MariaDB [emptbl]> select max(sal) from emp;
++----------+
+| max(sal) |
++----------+
+|  5000.00 |
++----------+
+1 row in set (0.000 sec)
+
+step two is :
+select max(sal) from emp where sal!=(select max(sal) from emp);
+
+MariaDB [emptbl]> select * from emp where sal=(select max(sal) from emp where sal!=(select max(sal) from emp));
++-------+-------+---------+------+------------+---------+------+--------+
+| empno | ename | job     | mgr  | hiredate   | sal     | comm | deptno |
++-------+-------+---------+------+------------+---------+------+--------+
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3000.00 | NULL |     20 |
+|  7902 | FORD  | ANALYST | 7566 | 1981-12-03 | 3000.00 | NULL |     20 |
++-------+-------+---------+------+------------+---------+------+--------+
+2 rows in set (0.037 sec)
+
+QUESTION 3: Find the emp having salary less than avg salary 
+MariaDB [emptbl]> select * from emp where sal<(select avg(sal) from emp);
++-------+--------+----------+------+------------+---------+---------+--------+
+| empno | ename  | job      | mgr  | hiredate   | sal     | comm    | deptno |
++-------+--------+----------+------+------------+---------+---------+--------+
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 |  800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
++-------+--------+----------+------+------------+---------+---------+--------+
+8 rows in set (0.014 sec)
+
+MariaDB [emptbl]> select avg(sal) from emp;
++-------------+
+| avg(sal)    |
++-------------+
+| 2073.214286 |
++-------------+
+1 row in set (0.001 sec)
+
+2)Multiple 
+MariaDB [emptbl]> select job,avg(sal) from emp group by job;
++-----------+-------------+
+| job       | avg(sal)    |
++-----------+-------------+
+| ANALYST   | 3000.000000 |
+| CLERK     | 1037.500000 |
+| MANAGER   | 2758.333333 |
+| PRESIDENT | 5000.000000 |
+| SALESMAN  | 1400.000000 |
++-----------+-------------+
+5 rows in set (0.044 sec)
+
+MariaDB [emptbl]> select * from emp where sal IN (select avg(sal) from emp group by job);
++-------+-------+-----------+------+------------+---------+------+--------+
+| empno | ename | job       | mgr  | hiredate   | sal     | comm | deptno |
++-------+-------+-----------+------+------------+---------+------+--------+
+|  7788 | SCOTT | ANALYST   | 7566 | 1982-12-09 | 3000.00 | NULL |     20 |
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 | 5000.00 | NULL |     10 |
+|  7902 | FORD  | ANALYST   | 7566 | 1981-12-03 | 3000.00 | NULL |     20 |
++-------+-------+-----------+------+------------+---------+------+--------+
+3 rows in set (0.169 sec)
+</pre>
+
+
+<b>ANY & ALL</b><br>
+![anyandall](https://user-images.githubusercontent.com/59610617/124790817-1f065180-df69-11eb-99ca-cc6d0af8a104.png)
+
+<pre>
+
+</pre>
+
+
+
+
+<b>ER</b><br>
+1)ONE to ONE<br>
+![onetoone](https://user-images.githubusercontent.com/59610617/124769672-481de680-df57-11eb-9703-34a9687e81b4.png)
+
+2)ON TO MANY
+![onetomany](https://user-images.githubusercontent.com/59610617/124769707-510eb800-df57-11eb-8d4c-87bbb9991ffb.png)
+
+3)Many to One
+
+4)Many to Many
+![manytomany](https://user-images.githubusercontent.com/59610617/124769864-756a9480-df57-11eb-801c-b04ec0ada21c.png)
+
 
