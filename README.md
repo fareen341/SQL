@@ -960,4 +960,233 @@ MariaDB [emptbl]> select * from emp where sal IN (select avg(sal) from emp group
 4)Many to Many
 ![manytomany](https://user-images.githubusercontent.com/59610617/124769864-756a9480-df57-11eb-801c-b04ec0ada21c.png)
 
+<b>JOINS</b><br>
+Need of joins:<br>
+If we need to fetch the information or data between two or more table, we use join.<br>
+Two or more tables can be joined if:<br>
+1)There should be a common column between tables with name and datatype.<br>
+2)If different names, then at least they should same in datatype.<br>
+JOIN=cartesion product + condition<br>
+
+<pre>
+EMP AND DEPT TABLE:
+MariaDB [emptbl]> select * from customer;
++-----+--------+--------+----------+
+| eid | name   | salary | location |
++-----+--------+--------+----------+
+|   1 | Mac    |  30000 | Mumbai   |
+|   2 | Fareen |  20000 | Boston   |
+|   3 | Roma   |  50000 | NULL     |
+|   4 | Giya   |  70000 | Boston   |
++-----+--------+--------+----------+
+4 rows in set (0.001 sec)
+
+MariaDB [emptbl]> select * from dept_location;
++-----+--------+-------+
+| eid | deptid | loc   |
++-----+--------+-------+
+|   1 | D1     | Thane |
+|   2 | D2     | USA   |
+|   3 | NULL   | China |
++-----+--------+-------+
+3 rows in set (0.001 sec)
+</pre>
+
+1)Cross join<br>
+syntax: r X x<br>
+example:select * from emp CROSS JOIN dept;<br>
+<pre>
+MariaDB [emptbl]> select * from customer CROSS JOIN dept_location;
++-----+--------+--------+----------+-----+--------+-------+
+| eid | name   | salary | location | eid | deptid | loc   |
++-----+--------+--------+----------+-----+--------+-------+
+|   1 | Mac    |  30000 | Mumbai   |   1 | D1     | Thane |
+|   1 | Mac    |  30000 | Mumbai   |   2 | D2     | USA   |
+|   1 | Mac    |  30000 | Mumbai   |   3 | NULL   | China |
+|   2 | Fareen |  20000 | Boston   |   1 | D1     | Thane |
+|   2 | Fareen |  20000 | Boston   |   2 | D2     | USA   |
+|   2 | Fareen |  20000 | Boston   |   3 | NULL   | China |
+|   3 | Roma   |  50000 | NULL     |   1 | D1     | Thane |
+|   3 | Roma   |  50000 | NULL     |   2 | D2     | USA   |
+|   3 | Roma   |  50000 | NULL     |   3 | NULL   | China |
+|   4 | Giya   |  70000 | Boston   |   1 | D1     | Thane |
+|   4 | Giya   |  70000 | Boston   |   2 | D2     | USA   |
+|   4 | Giya   |  70000 | Boston   |   3 | NULL   | China |
++-----+--------+--------+----------+-----+--------+-------+
+12 rows in set (0.001 sec)
+</pre>
+
+2)Inner join: this gives rows from both the table that satisfy the given condition.<br>
+<pre>
+emp.eid=dept.eid
+select * from emp,dept where emp.eid=dept.eid;
+select * from emp INNER JOIN dept on(emp.eid=dept.eid);
+select * from emp INNER JOIN dept using(eid);
+select * from emp INNER JOIN dept using(eid) where salary>6000;
+select * from emp INNER JOIN dept using(eid) orderby salary;
+
+MariaDB [emptbl]> select * from customer,dept_location where customer.eid=dept_location.eid;
++-----+--------+--------+----------+-----+--------+-------+
+| eid | name   | salary | location | eid | deptid | loc   |
++-----+--------+--------+----------+-----+--------+-------+
+|   1 | Mac    |  30000 | Mumbai   |   1 | D1     | Thane |
+|   2 | Fareen |  20000 | Boston   |   2 | D2     | USA   |
+|   3 | Roma   |  50000 | NULL     |   3 | NULL   | China |
++-----+--------+--------+----------+-----+--------+-------+
+3 rows in set (0.002 sec)
+
+MariaDB [emptbl]> select * from customer INNER JOIN dept_location on(customer.eid=dept_location.eid);
++-----+--------+--------+----------+-----+--------+-------+
+| eid | name   | salary | location | eid | deptid | loc   |
++-----+--------+--------+----------+-----+--------+-------+
+|   1 | Mac    |  30000 | Mumbai   |   1 | D1     | Thane |
+|   2 | Fareen |  20000 | Boston   |   2 | D2     | USA   |
+|   3 | Roma   |  50000 | NULL     |   3 | NULL   | China |
++-----+--------+--------+----------+-----+--------+-------+
+3 rows in set (0.001 sec)
+
+MariaDB [emptbl]> select * from customer INNER JOIN dept_location using(eid) order by salary;
++-----+--------+--------+----------+--------+-------+
+| eid | name   | salary | location | deptid | loc   |
++-----+--------+--------+----------+--------+-------+
+|   2 | Fareen |  20000 | Boston   | D2     | USA   |
+|   1 | Mac    |  30000 | Mumbai   | D1     | Thane |
+|   3 | Roma   |  50000 | NULL     | NULL   | China |
++-----+--------+--------+----------+--------+-------+
+3 rows in set (0.107 sec)
+
+
+Question 1)Check where emp assigned with dept. Chcek its city and loc are same or not
+MariaDB [emptbl]> select * from customer INNER JOIN dept_location on(customer.eid=dept_location.eid) and location=loc;
+Empty set (0.045 sec)
+</pre>
+
+
+2)Left join: this join also give all rows from both the table that satisfy the given condn and along with that it gives all the rows from left of the table that is not satisfying the given condn.<br>
+<pre>
+here customer become left table dept_location become the right tbl.
+
+MariaDB [emptbl]> select * from customer LEFT JOIN dept_location on(customer.eid=dept_location.eid);
++-----+--------+--------+----------+------+--------+-------+
+| eid | name   | salary | location | eid  | deptid | loc   |
++-----+--------+--------+----------+------+--------+-------+
+|   1 | Mac    |  30000 | Mumbai   |    1 | D1     | Thane |
+|   2 | Fareen |  20000 | Boston   |    2 | D2     | USA   |
+|   3 | Roma   |  50000 | NULL     |    3 | NULL   | China |
+|   4 | Giya   |  70000 | Boston   | NULL | NULL   | NULL  |
++-----+--------+--------+----------+------+--------+-------+
+4 rows in set (0.015 sec)
+
+On reverse:
+MariaDB [emptbl]> select * from dept_location LEFT JOIN customer on(customer.eid=dept_location.eid);
++-----+--------+-------+------+--------+--------+----------+
+| eid | deptid | loc   | eid  | name   | salary | location |
++-----+--------+-------+------+--------+--------+----------+
+|   1 | D1     | Thane |    1 | Mac    |  30000 | Mumbai   |
+|   2 | D2     | USA   |    2 | Fareen |  20000 | Boston   |
+|   3 | NULL   | China |    3 | Roma   |  50000 | NULL     |
++-----+--------+-------+------+--------+--------+----------+
+3 rows in set (0.001 sec)
+</pre>
+
+3)Right join<br>
+<pre>
+MariaDB [emptbl]> select * from dept_location RIGHT JOIN customer on(customer.eid=dept_location.eid);
++------+--------+-------+-----+--------+--------+----------+
+| eid  | deptid | loc   | eid | name   | salary | location |
++------+--------+-------+-----+--------+--------+----------+
+|    1 | D1     | Thane |   1 | Mac    |  30000 | Mumbai   |
+|    2 | D2     | USA   |   2 | Fareen |  20000 | Boston   |
+|    3 | NULL   | China |   3 | Roma   |  50000 | NULL     |
+| NULL | NULL   | NULL  |   4 | Giya   |  70000 | Boston   |
++------+--------+-------+-----+--------+--------+----------+
+4 rows in set (0.001 sec)
+</pre>
+
+Removing ambiguity<br>
+<pre>
+MariaDB [emptbl]> select eid,name from customer INNER JOIN dept_location on(customer.eid=dept_location.eid);
+ERROR 1052 (23000): Column 'eid' in field list is ambiguous
+MariaDB [emptbl]> select customer.eid,name from customer INNER JOIN dept_location on(customer.eid=dept_location.eid);
++-----+--------+
+| eid | name   |
++-----+--------+
+|   1 | Mac    |
+|   2 | Fareen |
+|   3 | Roma   |
++-----+--------+
+3 rows in set (0.013 sec)
+</pre>
+
+Table aliasing <br>
+<pre>
+MariaDB [emptbl]> select c.eid,name from customer c INNER JOIN dept_location d on(c.eid=d.eid);
++-----+--------+
+| eid | name   |
++-----+--------+
+|   1 | Mac    |
+|   2 | Fareen |
+|   3 | Roma   |
++-----+--------+
+3 rows in set (0.002 sec)
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
