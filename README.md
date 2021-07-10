@@ -1,8 +1,219 @@
 <b>COMMANDS IN MYSQL</b><br>
-Primary Key:
-student table
+#DDL(data definition language): THIS DEALS WITH SCHEMA(STRUCTURE) MEANING (TABLES):<br><br>
+1)create (to create view, function, triggers.....etc  )<br>
+2)alter<br>
+3)drop<br>
+4)truncate<br>
+5)rename<br>
+6)comment<br>
+<br>
+1)create<br>
+Syntax:<br>
+<b>1)create (table,view,function) table_name,view_name,function_name;</b><br>
+Example:
+create table student(rollno int, name varchar(20), date int);
+<pre>
+MariaDB [testingdb]> create table dummy(
+    -> id int
+    -> );
+Query OK, 0 rows affected (2.314 sec)
 
-Foreign key:<br>
+
+To see the table description use desc or describe followed by table name:
+MariaDB [testingdb]> desc dummy;
++-------+---------+------+-----+---------+-------+
+| Field | Type    | Null | Key | Default | Extra |
++-------+---------+------+-----+---------+-------+
+| id    | int(11) | YES  |     | NULL    |       |
++-------+---------+------+-----+---------+-------+
+1 row in set (0.102 sec)
+</pre>
+
+<b>2)alter table:</b>
+i)to add new column:
+<pre>
+MariaDB [testingdb]> alter table dummy add name varchar(20);
+Query OK, 0 rows affected (0.513 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [testingdb]> desc dummy;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| id    | int(11)     | YES  |     | NULL    |       |
+| name  | varchar(20) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+2 rows in set (0.040 sec)
+</pre>
+
+ii)to modify column datatype:
+<pre>
+MariaDB [testingdb]> alter table dummy modify name int;
+Query OK, 0 rows affected (1.395 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [testingdb]> desc dummy;
++-------+---------+------+-----+---------+-------+
+| Field | Type    | Null | Key | Default | Extra |
++-------+---------+------+-----+---------+-------+
+| id    | int(11) | YES  |     | NULL    |       |
+| name  | int(11) | YES  |     | NULL    |       |
++-------+---------+------+-----+---------+-------+
+2 rows in set (0.014 sec)
+</pre>
+
+iii)to add gender column after id:
+<pre>
+MariaDB [testingdb]> alter table dummy add column gender char(1) after id;
+Query OK, 0 rows affected (0.173 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [testingdb]> desc dummy;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| id     | int(11)     | YES  |     | NULL    |       |
+| gender | char(1)     | YES  |     | NULL    |       |
+| name   | varchar(20) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.032 sec)
+</pre>
+
+iv)to add column the very first:
+<pre>
+MariaDB [testingdb]> alter table dummy add column user_id int first;
+Query OK, 0 rows affected (0.816 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [testingdb]> desc dummy;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| user_id | int(11)     | YES  |     | NULL    |       |
+| id      | int(11)     | YES  |     | NULL    |       |
+| gender  | char(1)     | YES  |     | NULL    |       |
+| name    | varchar(20) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+4 rows in set (0.136 sec)
+</pre>
+
+v)to delete a column:
+<pre>
+MariaDB [testingdb]> alter table dummy drop column name;
+Query OK, 0 rows affected (0.122 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+<b>3)drop: to drop the entire table with structure and record:</b>
+<pre>
+MariaDB [testingdb]> drop table dummy;
+Query OK, 0 rows affected (1.185 sec)
+</pre>
+
+<b>4)truncate: this delete all data, and keep only structure, every space allocated for the data is removed</b>
+<pre>
+>truncate table dummy;
+</pre>
+
+<b>5)rename: to rename table name</b>
+Note: table name is not case sensitive, but the records are case sensitive.
+Example: table emp,EMP,Emp are all same , but record Fareen,FAREEN,fareen all are different.
+<pre>
+MariaDB [testingdb]> create table emp(id int);
+Query OK, 0 rows affected (0.578 sec)
+
+MariaDB [testingdb]> create table EMP(name varchar(20));
+ERROR 1050 (42S01): Table 'emp' already exists
+</pre>
+
+<pre>
+MariaDB [testingdb]> alter table emp rename to emp_info;
+Query OK, 0 rows affected (0.832 sec)
+</pre>
+
+<b>6)comment</b>
+
+<b>DML</b>
+1)insert
+2)update
+3)delete
+
+<b>1)insert</b>
+Method 1:
+<pre>
+MariaDB [testingdb]> insert into customer values(1,'fareen');
+Query OK, 1 row affected (0.094 sec)
+</pre>
+Method 2:
+<pre>
+MariaDB [testingdb]> insert into customer(id,name) values(2,'annu');
+Query OK, 1 row affected (0.072 sec)
+</pre>
+To insert multiple records in one single command:
+<pre>
+MariaDB [testingdb]> insert into customer(id,name) values(3,'zoya'),(4,'sana');
+Query OK, 2 rows affected (0.044 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+</pre>
+
+To copy the record of one table into another use the below command, but for this command to execute properly the structure of both the table must be same:
+<pre>
+MariaDB [testingdb]> insert into emp(select * from customer);
+Query OK, 4 rows affected (0.118 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+</pre>
+
+<b>CONSTRAINTS</b>
+1)primary key
+2)foreign key
+3)check
+4)unique
+5)not null
+6)default
+
+<b>1)primary key</b>
+column level:
+<pre>
+MariaDB [testingdb]> create table emp(
+    -> id int primary key
+    -> );
+Query OK, 0 rows affected (0.707 sec)
+</pre>
+
+table level:
+<pre>
+MariaDB [testingdb]> create table emp(
+    -> id int,
+    -> primary key(id)
+    -> );
+Query OK, 0 rows affected (0.552 sec)
+</pre>
+
+multiple primary key on single table:
+<pre>
+MariaDB [testingdb]> create table emp(
+    -> id int,
+    -> user_id int,
+    -> primary key(id,user_id)
+    -> );
+Query OK, 0 rows affected (1.423 sec)
+</pre>
+
+add existing table
+<pre>
+MariaDB [testingdb]> alter table emp add primary key(id,user_id);
+Query OK, 0 rows affected (1.057 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+drop:
+<pre>
+MariaDB [testingdb]> alter table emp drop primary key;
+
+we can't do >alter table emp drop primary key(id);   //invalid
+</pre>
+
+<b>2)Foreign key:</b><br>
 mobile table
 
 When deleting the record from student table it'll give error, but we can delete record from mobile table, Also id which is linked cannot be update<br>
@@ -23,9 +234,149 @@ MariaDB [testingdb]> create table mobile(
 Query OK, 0 rows affected (0.711 sec)
 </pre>
 
+<b>3)check</b>
+row level:
+<pre>
+MariaDB [testingdb]> create table emp(
+    -> id int,
+    -> age int check(age > 18)
+    -> );
+Query OK, 0 rows affected (0.350 sec)
+</pre>
+
+column level:
+<pre>
+MariaDB [testingdb]> create table emp(
+    -> id int,
+    -> age int,
+    -> check(age > 18)
+    -> );
+Query OK, 0 rows affected (0.567 sec)
+</pre>
+
+add on existing table:
+<pre>
+MariaDB [testingdb]> alter table emp add constraint chk check(age > 18);
+Query OK, 0 rows affected (1.054 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+drop:
+<pre>
+MariaDB [testingdb]> alter table emp drop constraint chk;
+Query OK, 0 rows affected (0.089 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+<b>4)unique</b>
+row level:
+<pre>
+MariaDB [testingdb]> create table emp(
+    -> id int,
+    -> subject varchar(10) unique
+    -> );
+Query OK, 0 rows affected (0.488 sec)
+
+
+</pre>
+
+table level:
+<pre>
+MariaDB [testingdb]> create table emp(
+    -> id int,
+    -> subject varchar(10),
+    -> constraint uk1 unique(subject)
+    -> );
+Query OK, 0 rows affected (0.253 sec)
+
+OR 
+
+MariaDB [testingdb]> create table emp(
+    -> id int,
+    -> subject varchar(10),
+    -> unique(subject)
+    -> );
+Query OK, 0 rows affected (0.620 sec)
+</pre>
+
+add on existing table:
+<pre>
+MariaDB [testingdb]> alter table emp add constraint unk unique(subject);
+Query OK, 0 rows affected (0.325 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+drop:
+<pre>
+MariaDB [testingdb]> alter table emp drop constraint unk;
+Query OK, 0 rows affected (1.163 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+<b>6)not null</b>
+on row level:
+<pre>
+MariaDB [testingdb]> create table emp(
+    -> id int not null
+    -> );
+Query OK, 0 rows affected (0.526 sec)
+</pre>
+
+no table level for this one:
+
+add on the existing table:
+In MySQL, nullability is a part of the datatype, not a constraint. So:
+<pre>
+MariaDB [testingdb]> alter table emp modify id int not null;
+Query OK, 0 rows affected (0.806 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+drop:
+<pre>
+MariaDB [testingdb]> alter table emp modify id int;
+Query OK, 0 rows affected (0.789 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+
+<b>7)default</b>
+<pre>
+MariaDB [testingdb]> create table emp(
+    -> id int,
+    -> loc varchar(20) default 'Mumbai'
+    -> );
+Query OK, 0 rows affected (0.286 sec)
+</pre>
+
+no table level for this:
+
+add on existing table:
+<pre>
+MariaDB [testingdb]> alter table emp modify loc varchar(20) default 'Mumbai';
+Query OK, 0 rows affected (0.137 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+drop:
+<pre>
+MariaDB [testingdb]> alter table emp alter loc set default 'Mumbai';
+Query OK, 0 rows affected (0.456 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+OR
+
+MariaDB [testingdb]> alter table emp alter loc drop default;
+Query OK, 0 rows affected (0.055 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</pre>
+
+
+
 Updating:
 <pre>
-MariaDB [testingdb]> update student set id=4 where id=2;
+MariaDB [testingdb]> update student
+set id=4 where id=2;
 Query OK, 1 row affected (0.168 sec)
 Rows matched: 1  Changed: 1  Warnings: 0
 
