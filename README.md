@@ -1428,8 +1428,8 @@ MariaDB [emptbl]> select * from customer LEFT JOIN dept_location on(customer.eid
 +-----+--------+--------+----------+------+--------+-------+
 4 rows in set (0.015 sec)
 
-On reverse:
-MariaDB [emptbl]> select * from dept_location LEFT JOIN customer on(customer.eid=dept_location.eid);
+On reverse:<br>
+MariaDB [emptbl]> select * from dept_location LEFT JOIN customer on(customer.eid=dept_location.eid);<br>
 +-----+--------+-------+------+--------+--------+----------+
 | eid | deptid | loc   | eid  | name   | salary | location |
 +-----+--------+-------+------+--------+--------+----------+
@@ -1482,6 +1482,282 @@ MariaDB [emptbl]> select c.eid,name from customer c INNER JOIN dept_location d o
 3 rows in set (0.002 sec)
 </pre>
 
+<b>VIEWS</b><br>
+Why views:<br>
+They provide an extra layer of security by defining different view to the users according to its role:<br>
+They are created using existing table, they stored permanently in the DBMS system.<br>
+Do not create a lot of views cuz they take space in dbms, which cause more cost.<br>
+Views make complex query simple.<br>
+Syntax: select view viewname as select column_list from base_table_name;<br><br>
+Types of views:<br>
+1)Simple view: the view tht is created from a single table is called as simple view, eg(insert, update, delete).<br>
+using single table.<br>
+2)Complex view: the view tht is created from two or more tables(join), using group by clause, using sub-query are called as complex view. They are not updatable.<br>
+using multiple table.<br>
+
+<br>
+1)Simple view<br>
+<pre>
+MariaDB [emptbl]> create view emp_view as select empno,ename,job from emp;
+Query OK, 0 rows affected (0.298 sec)
+
+MariaDB [emptbl]> show tables;
++------------------+
+| Tables_in_emptbl |
++------------------+
+| customer         |
+| dept             |
+| dept_location    |
+| emp              |
+| emp_view         |
++------------------+
+5 rows in set (0.028 sec)
+
+MariaDB [emptbl]> desc emp_view;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| empno | decimal(4,0) | NO   |     | NULL    |       |
+| ename | varchar(10)  | YES  |     | NULL    |       |
+| job   | varchar(9)   | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+3 rows in set (0.299 sec)
+
+MariaDB [emptbl]> select * from emp_view;
++-------+--------+-----------+
+| empno | ename  | job       |
++-------+--------+-----------+
+|  7369 | SMITH  | CLERK     |
+|  7499 | ALLEN  | SALESMAN  |
+|  7521 | WARD   | SALESMAN  |
+|  7566 | JONES  | MANAGER   |
+|  7654 | MARTIN | SALESMAN  |
+|  7698 | BLAKE  | MANAGER   |
+|  7782 | CLARK  | MANAGER   |
+|  7788 | SCOTT  | ANALYST   |
+|  7839 | KING   | PRESIDENT |
+|  7844 | TURNER | SALESMAN  |
+|  7876 | ADAMS  | CLERK     |
+|  7900 | JAMES  | CLERK     |
+|  7902 | FORD   | ANALYST   |
+|  7934 | MILLER | CLERK     |
++-------+--------+-----------+
+14 rows in set (0.005 sec)
+</pre>
+
+Can't change the view name using alter like we did in table<br>
+<pre>
+MariaDB [emptbl]> alter table emp_view rename to emp_views;
+ERROR 1347 (HY000): 'emptbl.emp_view' is not of type 'BASE TABLE'
+</pre>
+
+Drop view<br>
+<pre>
+drop view view_name;
+</pre>
+
+Whatever we changes in view will also affect the main table<br>
+<pre>
+MariaDB [emptbl]> select * from emp_view;
++-------+--------+-----------+
+| empno | ename  | job       |
++-------+--------+-----------+
+|  7934 | MILLER | CLERK     |
+|  7988 | FAREEN | HR        |
++-------+--------+-----------+
+15 rows in set (0.002 sec)
+
+MariaDB [emptbl]> select * from emp;
++-------+--------+-----------+------+------------+---------+---------+--------+
+| empno | ename  | job       | mgr  | hiredate   | sal     | comm    | deptno |
++-------+--------+-----------+------+------------+---------+---------+--------+
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
+|  7988 | FAREEN | HR        | NULL | NULL       |    NULL |    NULL |   NULL |
++-------+--------+-----------+------+------------+---------+---------+--------+
+15 rows in set (0.001 sec)
+</pre>
+
+
+Update in view<br>
+<pre>
+MariaDB [emptbl]> update emp_view set ename="ANNU" where empno=7902;
+Query OK, 1 row affected (0.151 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [emptbl]> select * from emp;
++-------+--------+-----------+------+------------+---------+---------+--------+
+| empno | ename  | job       | mgr  | hiredate   | sal     | comm    | deptno |
++-------+--------+-----------+------+------------+---------+---------+--------+
+|  7902 | ANNU   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |
+</pre>
+
+Deleting view<br>
+<pre>
+MariaDB [emptbl]> delete from emp_view where ename="7900";
+Query OK, 0 rows affected (0.001 sec)
+</pre>
+
+2)Complex view<br>
+<pre>
+Table:
+MariaDB [emptbl]> select * from customer;
++-----+--------+--------+----------+
+| eid | name   | salary | location |
++-----+--------+--------+----------+
+|   1 | Mac    |  30000 | Mumbai   |
+|   2 | Fareen |  20000 | Boston   |
+|   3 | Roma   |  50000 | NULL     |
+|   4 | Giya   |  70000 | Boston   |
++-----+--------+--------+----------+
+4 rows in set (0.070 sec)
+
+MariaDB [emptbl]> select * from dept_location;
++-----+--------+-------+
+| eid | deptid | loc   |
++-----+--------+-------+
+|   1 | D1     | Thane |
+|   2 | D2     | USA   |
+|   3 | NULL   | China |
++-----+--------+-------+
+3 rows in set (0.233 sec)
+
+creating view:
+MariaDB [emptbl]> create view emp_dept as select customer.eid,salary,location,deptid,loc from customer inner join dept_location using(eid);
+Query OK, 0 rows affected (0.134 sec)
+
+MariaDB [emptbl]> select * from emp_dept;
++-----+--------+----------+--------+-------+
+| eid | salary | location | deptid | loc   |
++-----+--------+----------+--------+-------+
+|   1 |  30000 | Mumbai   | D1     | Thane |
+|   2 |  20000 | Boston   | D2     | USA   |
+|   3 |  50000 | NULL     | NULL   | China |
++-----+--------+----------+--------+-------+
+3 rows in set (0.003 sec)
+</pre>
+
+We can't insert,update,delete in multiple table view.<br>
+We never give DML in complex view, this is just to make complex query view for simplification.<br>
+Inserting record:<br>
+<pre>
+MariaDB [emptbl]> insert into emp_dept(salary,location,deptid,loc) values(2000,"Mumbai","D4","Japan");
+ERROR 1393 (HY000): Can not modify more than one base table through a join view 'emptbl.emp_dept'
+</pre>
+
+
+Example1:creating group wise count view<br>
+<pre>
+MariaDB [emptbl]> create view emp_count as select job,count(ename) total_emp from emp group by job;
+Query OK, 0 rows affected (0.342 sec)
+
+MariaDB [emptbl]> select * from emp_count;
++-----------+-----------+
+| job       | total_emp |
++-----------+-----------+
+| ANALYST   |         2 |
+| CLERK     |         4 |
+| HR        |         1 |
+| MANAGER   |         3 |
+| PRESIDENT |         1 |
+| SALESMAN  |         4 |
++-----------+-----------+
+6 rows in set (0.003 sec)
+
+MariaDB [emptbl]> select * from emp_count where total_emp<2;
++-----------+-----------+
+| job       | total_emp |
++-----------+-----------+
+| HR        |         1 |
+| PRESIDENT |         1 |
++-----------+-----------+
+2 rows in set (0.001 sec)
+
+We cannot insert,update records in this emp_count table.
+MariaDB [emptbl]> insert into emp_count(job,total_emp) values("HR",8);
+ERROR 1471 (HY000): The target table emp_count of the INSERT is not insertable-into
+</pre>
+
+<b>DCL</b><br>
+Create user:<br>
+create user username@localhost identified by 'password';<br>
+<br>
+Checking all the users<br>
+<pre>
+From mysql user:
+
+MariaDB [mysql]> select host,user,password from user;
++-----------+------+----------+
+| Host      | User | Password |
++-----------+------+----------+
+| localhost | root |          |
+| 127.0.0.1 | root |          |
+| ::1       | root |          |
+| localhost | pma  |          |
++-----------+------+----------+
+4 rows in set (0.047 sec)
+</pre>
+
+Creating user:<br>
+<pre>
+MariaDB [mysql]> create user 'fareen'@'localhost' identified by 'fareen123';
+Query OK, 0 rows affected (0.132 sec)
+
+MariaDB [mysql]> select host,user,password from user;
++-----------+--------+-------------------------------------------+
+| Host      | User   | Password                                  |
++-----------+--------+-------------------------------------------+
+| localhost | root   |                                           |
+| 127.0.0.1 | root   |                                           |
+| ::1       | root   |                                           |
+| localhost | pma    |                                           |
+| localhost | fareen | *718CC6D9B51F4490EC659C95142657543D3D528C |
++-----------+--------+-------------------------------------------+
+5 rows in set (0.021 sec)
+</pre>
+
+Connecting it using new cmd:<br>
+<pre>
+C:\Users\faree>mysql -h localhost -u fareen -p
+Enter password: *********
+
+Selecting root database:
+This user does not have any privilage on any table so it'll deny access:
+MariaDB [(none)]> use emptbl;
+ERROR 1044 (42000): Access denied for user 'fareen'@'localhost' to database 'emptbl'
+MariaDB [(none)]>
+
+Show databases:
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| test               |
++--------------------+
+2 rows in set (0.001 sec)
+</pre>
+
+<b>Granting permissions:</b><br>
+GRANT permission ON DATABASE.tablename TO 'username'@'localhost';
+<pre>
+On admin side:
+MariaDB [mysql]> GRANT select,insert ON emptbl.* TO 'fareen'@'localhost';
+Query OK, 0 rows affected (0.046 sec)
+
+Here emptbl is database , emptbl.* meaning giving permission on all table of emptbl:
+
+On fareen user side:
+MariaDB [(none)]> use emptbl;
+Database changed
+
+Now it is not showing any error on emptbl;
+</pre>
+
+Revoke the permission<br>
+<pre>
+MariaDB [mysql]> REVOKE select ON emptbl.emp FROM 'annu'@'localhost';
+Query OK, 0 rows affected (0.142 sec)
+</pre>
 
 
 
@@ -1489,20 +1765,17 @@ MariaDB [emptbl]> select c.eid,name from customer c INNER JOIN dept_location d o
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<b>COMMON ERRORS</b><br>
+When error shows the particular table needs repair then use:<br>
+<pre>
+MariaDB [mysql]> repair table mysql.global_priv ;
++-------------------+--------+----------+----------+one
+| Table             | Op     | Msg_type | Msg_text |
++-------------------+--------+----------+----------+
+| mysql.global_priv | repair | status   | OK       |
++-------------------+--------+----------+----------+
+1 row in set (1.207 sec)
+</pre>
 
 
 
