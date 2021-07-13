@@ -920,6 +920,42 @@ count(*) : counts everything including NULL records too.<br>
 3)avg : return average.<br>
 4)min : return minimum<br> 
 5)max : return maximin<br>
+These functions only return max,min etc of only that particular record:<br>
+Example:<br>
+If we want to find the highest salary we can only use it to find salary only , we cannot use name,max(salary) etc<br>
+<pre>
+MariaDB [employee_info]> select * from student;
++------+-------+------------+
+| sid  | name  | percentage |
++------+-------+------------+
+| S15  | Harry |       98.7 |
+| S23  | Mac   |       99.2 |
+| S42  | Rohit |       78.2 |
+| S20  | Pooja |      83.33 |
+| S18  | Shree |      87.88 |
++------+-------+------------+
+5 rows in set (0.000 sec)
+
+MariaDB [employee_info]> select name,max(percentage) as highest_score from student;
++-------+---------------+
+| name  | highest_score |
++-------+---------------+
+| Harry |          99.2 |
++-------+---------------+
+1 row in set (0.000 sec)
+</pre>
+Here 99.2 is score is achieved by "Mac" but it is showing "Harry" in name, so max will only return the max salary not the name.<br>
+To find the max salary with name, we can use:<br>
+<pre>
+MariaDB [employee_info]> select name from student where percentage=(select max(percentage) from student);
++------+
+| name |
++------+
+| Mac  |
++------+
+1 row in set (0.002 sec)
+</pre>
+
 
 <pre>
 MariaDB [testingdb]> select COUNT(name) as total_records from emp2;
